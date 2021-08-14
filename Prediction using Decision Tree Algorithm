@@ -1,0 +1,46 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.tree import export_graphviz,DecisionTreeClassifier
+data = pd.read_csv("C:/Users/sharm/Downloads/iris.csv")
+data.head()
+data.shape
+data = data.drop(['Id'],axis = 1)
+data.head()
+data.isnull().sum()
+data.dtypes
+sns.pairplot(data)
+sns.pairplot(data,hue='Species')
+sns.heatmap(data.corr(),annot=True,cmap='cubehelix',center=0,linewidths=1.9)
+sns.pairplot(data,x_vars=['SepalLengthCm','SepalWidthCm'],
+             y_vars=['PetalLengthCm','PetalWidthCm'],hue='Species',palette='Set1')
+x=data.iloc[:,:-1].values
+y=data.iloc[:,-1].values
+x=data.iloc[:,:-1].values
+y=data.iloc[:,-1].values
+from sklearn.preprocessing import LabelEncoder
+lab=LabelEncoder()
+y=lab.fit_transform(y)
+y
+x_train,x_test,y_train,y_test = train_test_split(x,y,test_size=0.3,random_state=12)
+from sklearn.tree import DecisionTreeClassifier
+dt = DecisionTreeClassifier(max_depth = 5)
+dt.fit(x_train,y_train)
+dt.score(x_train,y_train)
+y_pred = dt.predict(x_test)
+y_pred
+df = pd.DataFrame({'Actual': y_test, 'Predict': y_pred})
+df.head()
+from sklearn.metrics import confusion_matrix, accuracy_score
+cm = confusion_matrix(y_test,y_pred)
+print(cm)
+accuracy_score(y_test,y_pred)
+import graphviz
+from sklearn import tree
+f = ['Sepal Length', 'Sepal Width', 'Petal Length', 'Petal Width']
+c = ['Setosa', 'Versicolor', 'Virginica']
+d = tree.export_graphviz(dt,feature_names = f, filled = True)
+dtree = graphviz.Source(d, format="png")
+dtree
